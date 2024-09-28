@@ -1,9 +1,10 @@
 const express = require ("express");
 const router = express.Router();
 const Post = require("../models/Post.js");
+const { validateTime } = require("../middlewares/middleware.js")
 
 
-router.post("/create", async (req, res) => {
+router.post("/create", validateTime, async (req, res) => {
     try {
         const postCreated = await Post.create({... req.body})
         res.status(201).json(postCreated)

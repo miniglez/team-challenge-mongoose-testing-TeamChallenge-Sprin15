@@ -2,11 +2,20 @@ const request = require("supertest")
 const app = require("./index.js")
 const Post = require("./models/Post.js") 
 
+const post = {
+    title: "prube23",
+    body: "body prueba"
+}
+
+beforeEach(async () => {
+    const deleteAll = await request(app).delete("/")
+});
+
+afterEach(async () => {
+    const deleteAll = await request(app).delete("/")
+});
+
 describe("testing /create", () => {
-    const post = {
-        title: "prube23",
-        body: "body prueba"
-    }
 
     test("create posts", async () => {
         let postCount = await Post.countDocuments({});
@@ -20,8 +29,18 @@ describe("testing /create", () => {
         expect(resPost.body.title).toBeDefined();
         expect(resPost.body.body).toBeDefined();
     });
-});
 
-afterAll(() => {
-    return Post.deleteMany();
-})
+    test("Testing getting all", async () => {
+        let postCount = await Post.countDocuments({});
+        expect(postCount).toBe(0);
+
+        resPost = await request(app).post("/create").send(post).expect(201);
+
+        resPost = await request(app).post("/create").send(post).expect(201);
+
+        resPost = await request(app).post("/create").send(post).expect(201);
+
+        postCount = await Post.countDocuments({});
+        expect(postCount).toBe(3);
+    })
+});
